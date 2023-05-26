@@ -1,0 +1,58 @@
+let slideWrapper = $(".hm-frame1__slider"),
+    lazyImages = slideWrapper.find('.slide-image'),
+    lazyCounter = 0;;
+
+function playPauseVideo(slick, control) {
+    let currentSlide, slideType, video;
+
+    currentSlide = slick.find(".slick-current");
+    slideType = currentSlide.attr("class").split(" ")[1];
+
+    if (slideType === "video") {
+        video = currentSlide.children("video").get(0);
+        if (video != null) {
+            if (control === "play") {
+                video.play();
+            } else {
+                video.pause();
+            }
+        }
+    }
+
+}
+
+$(function () {
+    slideWrapper.on("init", function (slick) {
+        slick = $(slick.currentTarget);
+        setTimeout(function () {
+            playPauseVideo(slick, "play");
+        }, 1000);
+    });
+    slideWrapper.on("beforeChange", function (event, slick) {
+        slick = $(slick.$slider);
+        playPauseVideo(slick, "pause");
+    });
+    slideWrapper.on("afterChange", function (event, slick) {
+        slick = $(slick.$slider);
+        playPauseVideo(slick, "play");
+    });
+    slideWrapper.on("lazyLoaded", function(event, slick, image, imageSource) {
+        lazyCounter++;
+        if (lazyCounter === lazyImages.length){
+          lazyImages.addClass('show');
+        }
+    });
+
+    slideWrapper.not('.slick-initialized').slick({
+        autoplaySpeed: 4000,
+        autoplay: false,
+        lazyLoad: "progressive",
+        speed: 600,
+        arrows: false,
+        dots: true,
+        infinite: false,
+        cssEase: "cubic-bezier(0.87, 0.03, 0.41, 0.9)"
+    });
+});
+
+
